@@ -2,7 +2,7 @@ import pygame
 import random
 from bird import Bird
 from obstacle import Obstacle
-
+from parallax_background import ParallaxBackground  # Importando a classe ParallaxBackground
 
 class Game:
     def __init__(self, window):
@@ -11,24 +11,41 @@ class Game:
         self.bird = Bird(self.window)  # Criando o pássaro
         self.obstacles = []
         self.game_over = False
-        self.score = 0  # Inicia o score corretamente em 0
-        self.obstacle_gap = 250  # Distância inicial entre os obstáculos
-        self.min_height = 0  # Limite superior da tela
-        self.max_height = self.window.get_height() + 70  # Limite inferior da tela
-        self.obstacle_speed = 5  # Velocidade inicial dos obstáculos
-        self.last_score_increase = 0  # Marca quando a dificuldade foi aumentada pela última vez
+        self.score = 0
+        self.obstacle_gap = 250
+        self.min_height = 0
+        self.max_height = self.window.get_height() + 70
+        self.obstacle_speed = 5
 
-        # Carregar as imagens de fundo
-        self.background_images = [pygame.image.load(f"../assets/background{i}.png") for i in range(1, 7)]
-        self.bg_x = [0, self.window.get_width()]  # Duas posições para o fundo
-        self.bg_speed = 1  # Velocidade do parallax (fundo se movendo mais devagar)
+        # Definir as imagens e velocidades para o efeito parallax
+        self.background_images = [
+            "../assets/background1.png",
+            "../assets/background2.png",
+            "../assets/background3.png",
+            "../assets/background4.png",
+            "../assets/background5.png",
+            "../assets/background6.png"
+        ]
+
+        # Listas de velocidades para as camadas do parallax
+        self.background_speeds = [1, 2, 3, 4, 5, 6]  # Velocidades diferentes para cada camada
+
+        pygame.mixer.init()
+
+        # Carregar e tocar a música do menu
+        pygame.mixer.music.load('../assets/music.wav')  # Substitua pelo caminho da sua música
+        pygame.mixer.music.play(-1, 0.0)  # Toca em loop (-1)
+
+        # Criando o fundo com o efeito parallax
+        self.background = ParallaxBackground(self.window, self.background_images, self.background_speeds)
 
     def run(self):
         while not self.game_over:
             self.window.fill((255, 255, 255))  # Limpa a tela
 
-            # Desenho do fundo com o efeito parallax
-            self.draw_parallax_background()
+            # Atualiza o fundo com o parallax
+            self.background.update()  # Atualiza o fundo
+            self.background.draw()  # Desenha o fundo
 
             # Lógica de movimento do pássaro
             self.bird.update(self.min_height, self.max_height)
@@ -63,33 +80,19 @@ class Game:
                     self.game_over = True
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        self.bird.jump()  # Chama o método de pulo ao pressionar a tecla espaço
-
-    def draw_parallax_background(self):
-        """Desenha o fundo com efeito parallax"""
-        for i, x in enumerate(self.bg_x):
-            self.window.blit(self.background_images[i % len(self.background_images)], (x, 0))
-
-        # Mover o fundo
-        self.bg_x = [x - self.bg_speed for x in self.bg_x]
-
-        # Se o fundo saiu da tela, reposiciona ele para a direita
-        if self.bg_x[0] < -self.window.get_width():
-            self.bg_x[0] = self.bg_x[1] + self.window.get_width()
-        if self.bg_x[1] < -self.window.get_width():
-            self.bg_x[1] = self.bg_x[0] + self.window.get_width()
+                        self.bird.jump()
 
     def create_obstacles(self):
         # Gera um novo obstáculo apenas se não houver ou se o último estiver distante o suficiente
         if len(self.obstacles) == 0 or self.obstacles[-1].x < self.window.get_width() - 250:
             obstacle_x = self.window.get_width()  # Faz o obstáculo aparecer fora da tela
-            obstacle_y = random.randint(100, self.window.get_height() - 100)  # Posição aleatória na altura
+            obstacle_y = random.randint(150, self.window.get_height() - 150)  # Posição aleatória na altura
 
             self.obstacles.append(Obstacle(self.window, obstacle_x, obstacle_y))
 
     def move_obstacles(self):
         for obstacle in self.obstacles:
-            obstacle.update(self.obstacle_speed)  # Passa a velocidade dos obstáculos para o método update
+            obstacle.update(self.obstacle_speed)  # Passa a velocidade dos obstáculos para o metodo update
 
             # Verifica se o pássaro passou por um obstáculo sem colidir e aumenta a pontuação
             if not obstacle.passed and obstacle.x + obstacle.width < self.bird.x:
@@ -111,8 +114,7 @@ class Game:
         self.window.blit(score_text, (10, 10))
 
     def increase_difficulty(self):
-        """ Aumenta a velocidade dos obstáculos e reduz o espaçamento conforme a pontuação """
-        if self.score >= self.last_score_increase + 5:  # Aumenta a cada 5 pontos
+        # Aumenta a velocidade dos obstáculos e reduz o espaçamento conforme o tempo ou a pontuação
+        if self.score % 100 == 0:  # Aumenta a cada 100 pontos
             self.obstacle_speed += 1  # Aumenta a velocidade dos obstáculos
-            self.obstacle_gap = max(150, self.obstacle_gap - 10)  # Diminui o espaçamento (limite mínimo de 150)
-            self.last_score_increase = self.score  # Atualiza o último aumento de dificuldade
+            self.score += 1  # Impede que a dificuldade aumente várias vezes no mesmo intervalo

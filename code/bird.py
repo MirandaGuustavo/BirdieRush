@@ -3,19 +3,20 @@ import pygame
 class Bird:
     def __init__(self, window):
         self.window = window
-        self.x = 100  # Posição inicial do pássaro
-        self.y = 200  # Posição inicial do pássaro
-        self.width = 50  # Largura ajustada do pássaro
-        self.height = 50  # Altura ajustada do pássaro
-        self.gravity = 1  # Força da gravidade
-        self.velocity = 0  # Velocidade do pássaro (inicialmente sem movimento vertical)
-        self.lift = -12  # Força do pulo (subida)
-        self.image_index = 0  # Controla qual frame do pássaro está sendo usado
+        self.x = 100
+        self.y = 200
+        self.width = 50
+        self.height = 50
+        self.gravity = 1
+        self.velocity = 0
+        self.lift = -12
+        self.image_index = 0
         self.images = self.load_images()  # Carregar as imagens do pássaro
-        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)  # A posição e colisão do pássaro
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.jump_sound = pygame.mixer.Sound("../assets/jump.mp3")
 
     def load_images(self):
-        """Carregar as 4 imagens do pássaro."""
+        # CARREGAR imagens
         images = []
         for i in range(1, 5):
             image = pygame.image.load(f"../assets/bird{i}.png")  # Ajuste para os arquivos PNG
@@ -24,14 +25,14 @@ class Bird:
         return images
 
     def update(self, min_height, max_height, safe_margin=10):
-        """Atualiza o movimento do pássaro com gravidade e a capacidade de pular, respeitando os limites."""
-        self.velocity += self.gravity  # Aplica a gravidade
-        self.y += self.velocity  # Move o pássaro para baixo
-        self.rect.y = self.y  # Atualiza a posição do retângulo para colisão
 
-        # Limitar o movimento do pássaro dentro da tela (sem ultrapassar os limites superior e inferior)
+        self.velocity += self.gravity
+        self.y += self.velocity
+        self.rect.y = self.y
+
+        # Limitar o movimento do pássaro dentro da tela
         if self.rect.top < min_height:
-            self.rect.top = min_height  # Limite superior
+            self.rect.top = min_height
             self.y = min_height
 
         # Ajustar o limite inferior, permitindo um deslocamento um pouco abaixo da borda
@@ -41,7 +42,8 @@ class Bird:
 
     def jump(self):
         """Faz o pássaro saltar, ajustando a velocidade para um pulo."""
-        self.velocity = self.lift  # Quando o pulo é ativado, a velocidade é ajustada para a força do pulo
+        self.velocity = self.lift
+        self.jump_sound.play()
 
     def draw(self):
         """Desenha o pássaro na tela com animação."""
