@@ -11,6 +11,7 @@ class Obstacle:
         self.speed = 5  # Velocidade dos obstáculos
         self.rect_top = pygame.Rect(self.x, 0, self.width, self.height_top)  # Parte superior do obstáculo
         self.rect_bottom = pygame.Rect(self.x, self.height_top + self.gap, self.width, self.height_bottom)  # Parte inferior
+        self.passed = False  # Indica se o obstáculo já foi ultrapassado pelo pássaro
 
     def update(self, speed):
         self.x -= speed

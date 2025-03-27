@@ -14,7 +14,7 @@ class Entity:
 
 class Bird(Entity):
     def __init__(self, window):
-        super().__init__(window, 'assets/bird.png', 100, 300)
+        super().__init__(window, '../assets/bird.png', 100, 300)
         self.velocity = 0
         self.gravity = 0.5
         self.lift = -15

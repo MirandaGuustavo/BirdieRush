@@ -18,7 +18,7 @@ class Bird:
         """Carregar as 4 imagens do pássaro."""
         images = []
         for i in range(1, 5):
-            image = pygame.image.load(f"assets/bird{i}.png")  # Ajuste para os arquivos PNG
+            image = pygame.image.load(f"../assets/bird{i}.png")  # Ajuste para os arquivos PNG
             image = pygame.transform.scale(image, (self.width, self.height))  # Redimensiona a imagem
             images.append(image)
         return images
