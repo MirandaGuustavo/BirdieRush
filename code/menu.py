@@ -9,7 +9,7 @@ class Menu:
 
         self.title = self.font.render("Birdie Rush", True, COLOR_YELLOW)
         self.start_text = "Press SPACE to Start"
-        self.mute_text = "Press M to Mute/Un-mute"
+        self.mute_text = "Press M to Music OFF/ON"
 
         # definir o som de fundo
         pygame.mixer.init()
@@ -30,6 +30,7 @@ class Menu:
 
     def show(self, game):
         clock = pygame.time.Clock()  # controle de FPS
+
         while True:
             self.window.fill(COLOR_BLACK)
 
@@ -58,7 +59,7 @@ class Menu:
                     quit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        pygame.mixer.music.stop()
+
                         game.run()
                         return
                     elif event.key == pygame.K_m:
@@ -68,9 +69,7 @@ class Menu:
             clock.tick(60)
 
     def _draw_text_with_shadow(self, text, y_position):
-
         rendered_text = self.font.render(text, True, COLOR_WHITE)
-
         shadow = self.font.render(text, True, COLOR_GRAY)
 
         self.window.blit(shadow, (self.window.get_width() // 2 - rendered_text.get_width() // 2 + 2, y_position + 2))

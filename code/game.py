@@ -1,6 +1,7 @@
 import pygame
 import random
 from bird import Bird
+from const import COLOR_WHITE
 from obstacle import Obstacle
 from parallax_background import ParallaxBackground
 from menu import Menu
@@ -136,9 +137,9 @@ class Game:
     def game_over_screen(self):
         font = pygame.font.SysFont('Snap ITC', 36)
         game_over_text = font.render("GAME OVER", True, (255, 0, 0))
-        score_text = font.render(f"Score: {self.score}", True, (255, 255, 255))
-        restart_text = font.render("Press R to Restart", True, (255, 255, 255))
-        menu_text = font.render("Press M to Return to Menu", True, (255, 255, 255))
+        score_text = font.render(f"Score: {self.score}", True, COLOR_WHITE)
+        restart_text = font.render("Press R to Restart", True, COLOR_WHITE)
+        menu_text = font.render("Press M to Return to Menu", True, COLOR_WHITE)
 
         # Exibir Game Over
         self.window.fill((0, 0, 0))  # Preencher com fundo preto
@@ -163,8 +164,9 @@ class Game:
                     elif event.key == pygame.K_m:  # Voltar para o menu
                         menu = Menu(self.window)
                         menu.show(self)  # Mostrar o menu
-                        waiting_for_input = False
+                        return
 
     def reset_game(self):
         self.__init__(self.window)  # Reinicia a instância do jogo
-        self.run()
+        self.game_over = False
+        return

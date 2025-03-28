@@ -47,7 +47,7 @@ class ParallaxBackground:
             layer["x1"] -= layer["speed"]
             layer["x2"] -= layer["speed"]
 
-            # Reinicia a posição das camadas para loop contínuo
+            # reinicia a posição das camadas
             if layer["x1"] <= -layer["width"]:
                 layer["x1"] = layer["x2"] + layer["width"]
             if layer["x2"] <= -layer["width"]:
