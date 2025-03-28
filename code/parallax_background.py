@@ -8,18 +8,23 @@ class ParallaxBackground:
         self.screen_width = window.get_width()
         self.screen_height = window.get_height()
 
-        # Carregar as imagens e configurar as posições iniciais
+        # carregar as imagens e configurar as posições iniciais
         for i, path in enumerate(image_paths):
-            image = pygame.image.load(path).convert_alpha()  # Carregar imagem com transparência
+            image = pygame.image.load(path).convert_alpha()
             width = image.get_width()
             height = image.get_height()
 
-
+            # ajusta a largura da imagem para o tamanho da tela
+            if width > self.screen_width:
+                height = int(height * (self.screen_width / width))
+                width = self.screen_width
             if height < self.screen_height:
                 height = self.screen_height
                 image = pygame.transform.scale(image, (width, height))
+            else:
+                image = pygame.transform.scale(image, (width, height))
 
-            # Criando duas vezes as imagens para o efeito de loop contínuo
+            # criando duas vezes as imagens para o efeito de loop contínuo
             self.layers.append({
                 "image": image,
                 "x1": 0,
@@ -38,7 +43,6 @@ class ParallaxBackground:
             })
 
     def update(self):
-        # Move as camadas para criar o efeito de parallax
         for layer in self.layers:
             layer["x1"] -= layer["speed"]
             layer["x2"] -= layer["speed"]
@@ -50,9 +54,6 @@ class ParallaxBackground:
                 layer["x2"] = layer["x1"] + layer["width"]
 
     def draw(self):
-        # Desenha as camadas do fundo de forma que cubram toda a altura e largura da tela
         for layer in self.layers:
-            # Desenha a primeira camada
             self.window.blit(layer["image"], (layer["x1"], 0))
-            # Desenha a segunda camada
             self.window.blit(layer["image"], (layer["x2"], 0))

@@ -15,8 +15,8 @@ class Level:
         self.entities = []
         self.bird = Bird(self.window)
         self.entities.append(self.bird)
-        self.obstacles = []  # Lista de obstáculos
-        self.score = 0  # Pontuação
+        self.obstacles = []
+        self.score = 0
 
     def run(self):
         clock = pygame.time.Clock()
@@ -35,37 +35,32 @@ class Level:
             clock.tick(60)
 
     def handle_events(self):
-        """Gerencia eventos como pressionamento de teclas."""
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    self.bird.flap()  # Faz o pássaro voar
+                    self.bird.flap()
 
     def update_entities(self):
-        """Atualiza as entidades do jogo (pássaro, obstáculos, etc.)"""
-        self.bird.update()  # Atualiza o movimento do pássaro
+        self.bird.update()
         for obstacle in self.obstacles:
-            obstacle.update()  # Atualiza os obstáculos
+            obstacle.update()
 
     def render_entities(self):
-        """Desenha todas as entidades na tela."""
         self.bird.render()
         for obstacle in self.obstacles:
             obstacle.render()
 
     def spawn_obstacles(self):
-        """Gera novos obstáculos a cada certo intervalo."""
-        if random.randint(1, 120) == 1:  # Chance de gerar um novo obstáculo
-            new_obstacle = Obstacle(self.window, self.window.get_width(), 300)  # Posição inicial do obstáculo
+        if random.randint(1, 120) == 1:
+            new_obstacle = Obstacle(self.window, self.window.get_width(), 300)
             self.obstacles.append(new_obstacle)
 
     def move_obstacles(self):
-        """Movimenta os obstáculos e verifica se saíram da tela."""
         for obstacle in self.obstacles[:]:
             obstacle.update()
             if obstacle.is_off_screen():
                 self.obstacles.remove(obstacle)
-                self.score += 1  # Aumenta a pontuação ao passar pelos obstáculos
+                self.score += 1

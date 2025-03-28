@@ -2,7 +2,8 @@ import pygame
 import random
 from bird import Bird
 from obstacle import Obstacle
-from parallax_background import ParallaxBackground  # Importando a classe ParallaxBackground
+from parallax_background import ParallaxBackground
+from menu import Menu
 
 class Game:
     def __init__(self, window):
@@ -16,6 +17,7 @@ class Game:
         self.min_height = 0
         self.max_height = self.window.get_height() + 70
         self.obstacle_speed = 5
+        self.is_muted = False  # Variável para controlar o som (mutado ou não)
 
         # Definir as imagens e velocidades para o efeito parallax
         self.background_images = [
@@ -74,13 +76,18 @@ class Game:
             # Aumentar a dificuldade conforme o tempo ou pontos
             self.increase_difficulty()
 
-            # Verificar eventos de teclado e sair do jogo
+            # Verificar eventos de teclado
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.game_over = True
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         self.bird.jump()
+                    if event.key == pygame.K_m:  # Alterna o estado de mute
+                        self.toggle_mute()
+
+            if self.game_over:
+                self.game_over_screen()  # Chama a tela de Game Over quando o jogo acaba
 
     def create_obstacles(self):
         # Gera um novo obstáculo apenas se não houver ou se o último estiver distante o suficiente
@@ -118,3 +125,46 @@ class Game:
         if self.score % 100 == 0:  # Aumenta a cada 100 pontos
             self.obstacle_speed += 1  # Aumenta a velocidade dos obstáculos
             self.score += 1  # Impede que a dificuldade aumente várias vezes no mesmo intervalo
+
+    def toggle_mute(self):
+        if self.is_muted:
+            pygame.mixer.music.unpause()  # Retorna a música ao normal
+        else:
+            pygame.mixer.music.pause()  # Muta a música
+        self.is_muted = not self.is_muted  # Alterna o estado de mute
+
+    def game_over_screen(self):
+        font = pygame.font.SysFont('Snap ITC', 36)
+        game_over_text = font.render("GAME OVER", True, (255, 0, 0))
+        score_text = font.render(f"Score: {self.score}", True, (255, 255, 255))
+        restart_text = font.render("Press R to Restart", True, (255, 255, 255))
+        menu_text = font.render("Press M to Return to Menu", True, (255, 255, 255))
+
+        # Exibir Game Over
+        self.window.fill((0, 0, 0))  # Preencher com fundo preto
+        self.window.blit(game_over_text, (self.window.get_width() // 2 - game_over_text.get_width() // 2, 100))
+        self.window.blit(score_text, (self.window.get_width() // 2 - score_text.get_width() // 2, 150))  # Exibe o score
+        self.window.blit(restart_text, (self.window.get_width() // 2 - restart_text.get_width() // 2, 200))
+        self.window.blit(menu_text, (self.window.get_width() // 2 - menu_text.get_width() // 2, 250))
+
+        pygame.display.flip()
+
+        # Aguardar a escolha do jogador
+        waiting_for_input = True
+        while waiting_for_input:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_r:  # Reiniciar o jogo
+                        self.reset_game()  # Reinicia a instância do jogo
+                        waiting_for_input = False
+                    elif event.key == pygame.K_m:  # Voltar para o menu
+                        menu = Menu(self.window)
+                        menu.show(self)  # Mostrar o menu
+                        waiting_for_input = False
+
+    def reset_game(self):
+        self.__init__(self.window)  # Reinicia a instância do jogo
+        self.run()

@@ -20,10 +20,8 @@ class Bird(Entity):
         self.lift = -15
 
     def update(self):
-        """Movimento do pássaro e gravidade"""
         self.velocity += self.gravity
         self.rect.y += self.velocity
 
     def flap(self):
-        """Faz o pássaro subir"""
         self.velocity = self.lift
