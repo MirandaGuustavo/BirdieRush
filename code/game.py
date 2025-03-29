@@ -18,16 +18,16 @@ class Game:
         self.min_height = 0
         self.max_height = self.window.get_height() + 70
         self.obstacle_speed = 5
-        self.is_muted = False  # Variável para controlar o som (mutado ou não)
+        self.is_muted = False
 
         # Definir as imagens e velocidades para o efeito parallax
         self.background_images = [
-            "../assets/background1.png",
-            "../assets/background2.png",
-            "../assets/background3.png",
-            "../assets/background4.png",
-            "../assets/background5.png",
-            "../assets/background6.png"
+            "assets/background1.png",
+            "assets/background2.png",
+            "assets/background3.png",
+            "assets/background4.png",
+            "assets/background5.png",
+            "assets/background6.png"
         ]
 
         # Listas de velocidades para as camadas do parallax
@@ -36,7 +36,7 @@ class Game:
         pygame.mixer.init()
 
         # Carregar e tocar a música do menu
-        pygame.mixer.music.load('../assets/music.wav')  # Substitua pelo caminho da sua música
+        pygame.mixer.music.load('assets/music.wav')
         pygame.mixer.music.play(-1, 0.0)  # Toca em loop (-1)
 
         # Criando o fundo com o efeito parallax
@@ -100,7 +100,7 @@ class Game:
 
     def move_obstacles(self):
         for obstacle in self.obstacles:
-            obstacle.update(self.obstacle_speed)  # Passa a velocidade dos obstáculos para o metodo update
+            obstacle.update(self.obstacle_speed)  # Passa a velocidade dos obstáculos para o método update
 
             # Verifica se o pássaro passou por um obstáculo sem colidir e aumenta a pontuação
             if not obstacle.passed and obstacle.x + obstacle.width < self.bird.x:

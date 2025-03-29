@@ -13,12 +13,12 @@ class Bird:
         self.image_index = 0
         self.images = self.load_images()
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
-        self.jump_sound = pygame.mixer.Sound("../assets/jump.mp3")
+        self.jump_sound = pygame.mixer.Sound("assets/jump.mp3")
 
     def load_images(self):
         images = []
         for i in range(1, 5):
-            image = pygame.image.load(f"../assets/bird{i}.png")  # Ajuste para os arquivos PNG
+            image = pygame.image.load(f"assets/bird{i}.png")  # Ajuste para os arquivos PNG
             image = pygame.transform.scale(image, (self.width, self.height))  # Redimensiona a imagem
             images.append(image)
         return images
